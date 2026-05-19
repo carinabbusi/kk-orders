@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="theme-color" content="#E55B1E"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<meta name="apple-mobile-web-app-title" content="K&K Orders"/>
+<title>Koffee &amp; Kale — Orders</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --brand:#E55B1E;--brand-light:#FDF0EA;
+  --bg:#F7F5F2;--surface:#fff;--border:rgba(0,0,0,0.09);
+  --text:#1A1917;--text2:#6B6963;--text3:#A09C96;
+  --red-bg:#FCEBEB;--red-t:#A32D2D;
+  --amb-bg:#FAEEDA;--amb-t:#854F0B;
+  --grn-bg:#EAF3DE;--grn-t:#3B6D11;
+  --blu-bg:#E6F1FB;--blu-t:#185FA5;
+  --pur-bg:#EEEDFE;--pur-t:#534AB7;
+  --r:14px;
+  --st:env(safe-area-inset-top,0px);
+  --sb:env(safe-area-inset-bottom,0px);
+}
+@media(prefers-color-scheme:dark){
+  :root{
+    --bg:#111110;--surface:#1E1D1B;--border:rgba(255,255,255,0.1);
+    --text:#F5F3EF;--text2:#A09C96;--text3:#6B6963;
+    --brand-light:#2A1A10;
+    --red-bg:#2A1010;--red-t:#F09595;
+    --amb-bg:#2A1F0A;--amb-t:#FAC775;
+    --grn-bg:#101F08;--grn-t:#C0DD97;
+    --blu-bg:#0A1828;--blu-t:#85B7EB;
+    --pur-bg:#1A1830;--pur-t:#AFA9EC;
+  }
+}
+html,body{height:100%;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text)}
+.app{display:flex;flex-direction:column;min-height:100%;max-width:480px;margin:0 auto}
+.hdr{background:var(--brand);padding:calc(var(--st) + 14px) 16px 14px;display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:10}
+.logo{width:36px;height:36px;border-radius:50%;object-fit:cover;border:2px solid rgba(255,255,255,0.3);flex-shrink:0}
+.hdr h1{font-size:16px;font-weight:600;color:#fff;letter-spacing:-.2px}
+.hdr p{font-size:11px;color:rgba(255,255,255,0.75);margin-top:1px}
+.tabs{background:var(--surface);border-bottom:1px solid var(--border);display:flex;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;padding:0 8px}
+.tabs::-webkit-scrollbar{display:none}
+.tab{flex-shrink:0;padding:13px 13px 11px;font-size:13px;font-weight:500;color:var(--text2);border-bottom:2.5px solid transparent;cursor:pointer;white-space:nowrap;text-align:center}
+.tab.active{color:var(--brand);border-bottom-color:var(--brand)}
+.tab .dot{width:4px;height:4px;border-radius:50%;background:var(--brand);margin:3px auto 0;opacity:0}
+.tab.today .dot{opacity:1}
+.tab.active .dot{background:var(--brand)}
+.body{padding:14px 14px calc(var(--sb) + 24px)}
+.day{display:none}
+.day.active{display:block}
+.lbl{font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text3);margin:14px 0 8px}
+.lbl:first-child{margin-top:0}
+.card{background:var(--surface);border-radius:var(--r);border:1px solid var(--border);border-left:4px solid #ccc;margin-bottom:10px}
+.ch{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:11px 13px 3px}
+.cs{font-size:14px;font-weight:600;color:var(--text)}
+.bdg{font-size:11px;font-weight:600;padding:3px 9px;border-radius:99px;white-space:nowrap;flex-shrink:0}
+.r{background:var(--red-bg);color:var(--red-t)}
+.a{background:var(--amb-bg);color:var(--amb-t)}
+.g{background:var(--grn-bg);color:var(--grn-t)}
+.cl{font-size:10px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;padding:0 13px 4px;display:block}
+.cw{font-size:11px;color:var(--text3);padding:0 13px 4px}
+.cb{font-size:13px;color:var(--text2);padding:7px 13px 11px;border-top:1px solid var(--border);line-height:1.6}
+.cn{margin:0 13px 10px;font-size:12px;background:var(--amb-bg);color:var(--amb-t);border-radius:8px;padding:5px 9px;font-weight:500}
+.tasks{background:var(--surface);border-radius:var(--r);border:1px solid var(--border)}
+.ti{display:flex;align-items:flex-start;gap:10px;padding:11px 13px;border-bottom:1px solid var(--border)}
+.ti:last-child{border-bottom:none}
+.tic{width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:14px}
+.adm{background:var(--blu-bg)}
+.snd{background:var(--brand-light)}
+.ofc{background:var(--grn-bg)}
+.rst{background:var(--pur-bg)}
+.stk{background:var(--pur-bg)}
+.tt{font-size:13px;color:var(--text);line-height:1.5;flex:1}
+.ts{font-size:12px;color:var(--text2);margin-top:4px}
+.ol{margin-top:5px;padding-left:14px;font-size:12px;color:var(--text2);line-height:1.9}
+</style>
+</head>
+<body>
+<div class="app">
+<div class="hdr">
+  <img class="logo" src="data:image/webp;base64,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" alt="Logo"/>
+  <div><h1>Koffee &amp; Kale</h1><p id="dlbl">Orders</p></div>
+</div>
+<div class="tabs" id="tabs">
+  <div class="tab" data-day="0">Dom<div class="dot"></div></div>
+  <div class="tab" data-day="1">Seg<div class="dot"></div></div>
+  <div class="tab" data-day="2">Ter<div class="dot"></div></div>
+  <div class="tab" data-day="3">Qua<div class="dot"></div></div>
+  <div class="tab" data-day="4">Qui<div class="dot"></div></div>
+  <div class="tab" data-day="5">Sex<div class="dot"></div></div>
+  <div class="tab" data-day="6">Sáb<div class="dot"></div></div>
+</div>
+<div class="body">
+
+<!-- DOMINGO -->
+<div class="day" id="day-0">
+  <div class="lbl">3 Pedidos</div>
+  <div class="card" style="border-left-color:#E55B1E">
+    <div class="ch"><span class="cs">Koffee and Kale</span><span class="bdg r">até 13h00</span></div>
+    <span class="cl" style="color:#E55B1E">Daily Order</span>
+    <div class="cw">🌐 koffeeandkale.ie</div>
+    <div class="cb">Oat milk, minibutter</div>
+  </div>
+  <div class="card" style="border-left-color:#185FA5">
+    <div class="ch"><span class="cs">Sysco</span><span class="bdg a">até 15h00</span></div>
+    <span class="cl" style="color:#185FA5">Sysco List</span>
+    <div class="cw">🌐 sysco.ie</div>
+    <div class="cb">Bolos, refrigerantes, leites alternativos, diversos</div>
+  </div>
+  <div class="card" style="border-left-color:#854F0B">
+    <div class="ch"><span class="cs">Henderson</span><span class="bdg a">até 15h00</span></div>
+    <span class="cl" style="color:#854F0B">Henderson</span>
+    <div class="cw">🌐 henderson.ie</div>
+    <div class="cb">Leite, Vithits, crisps, frutas vermelhas, Coke, água</div>
+    <div class="cn">Pedir conforme necessário</div>
+  </div>
+  <div class="lbl">5 Tarefas</div>
+  <div class="tasks">
+    <div class="ti"><div class="tic adm">🗂️</div><div class="tt">Shift report até 10h</div></div>
+    <div class="ti"><div class="tic adm">🗂️</div><div class="tt">Atualizar Spreadsheet Sales x Labor</div></div>
+    <div class="ti"><div class="tic adm">🗂️</div><div class="tt">Atualizar WBR (invoices, depósitos no cofre)</div></div>
+    <div class="ti"><div class="tic stk">📦</div><div class="tt">Contagem de stock (Stock List)<div class="ts">Fazer hoje — obrigatório aos domingos</div></div></div>
+    <div class="ti"><div class="tic stk">📦</div><div class="tt">Contagem semanal (Weekly Count)<div class="ts">Preferencialmente hoje — prazo até quarta de manhã</div></div></div>
+  </div>
+</div>
+
+<!-- SEGUNDA -->
+<div class="day" id="day-1">
+  <div class="lbl">5 Pedidos</div>
+  <div class="card" style="border-left-color:#E55B1E">
+    <div class="ch"><span class="cs">Koffee and Kale</span><span class="bdg r">até 13h00</span></div>
+    <span class="cl" style="color:#E55B1E">Daily Order</span>
+    <div class="cw">🌐 koffeeandkale.ie</div>
+    <div class="cb">Overnight oats, granola pots, sumos de laranja, smoothies</div>
+  </div>
+  <div class="card" style="border-left-color:#E55B1E">
+    <div class="ch"><span class="cs">Koffee and Kale</span><span class="bdg r">até 13h00</span></div>
+    <span class="cl" style="color:#E55B1E">Daily Order</span>
+    <div class="cw">🌐 koffeeandkale.ie</div>
+    <div class="cb">Oat milk, minibutter</div>
+  </div>
+  <div class="card" style="border-left-color:#E55B1E">
+    <div class="ch"><span class="cs">Koffee and Kale</span><span class="bdg r">até 13h00</span></div>
+    <span class="cl" style="color:#E55B1E">Daily Order</span>
+    <div class="cw">🌐 koffeeandkale.ie</div>
+    <div class="cb">Coco/choco protein squares, granola bars, brownie, éclair, shortbreads</div>
+  </div>
+  <div class="card" style="border-left-color:#185FA5">
+    <div class="ch"><span class="cs">Sysco</span><span class="bdg a">até 15h00</span></div>
+    <span class="cl" style="color:#185FA5">Sysco List</span>
+    <div class="cw">🌐 sysco.ie</div>
+    <div class="cb">Bolos, refrigerantes, leites alternativos, diversos</div>
+  </div>
+  <div class="card" style="border-left-color:#854F0B">
+    <div class="ch"><span class="cs">Henderson</span><span class="bdg a">até 15h00</span></div>
+    <span class="cl" style="color:#854F0B">Henderson</span>
+    <div class="cw">🌐 henderson.ie</div>
+    <div class="cb">Leite, Vithits, crisps, frutas vermelhas, Coke, água</div>
+    <div class="cn">Pedir conforme necessário</div>
+  </div>
+  <div class="lbl">5 Tarefas</div>
+  <div class="tasks">
+    <div class="ti"><div class="tic adm">🗂️</div><div class="tt">Shift report até 10h</div></div>
+    <div class="ti"><div class="tic snd">📧</div><div class="tt">Enviar WBR da semana passada — imprimir recibo semanal e checar números antes de enviar<div class="ts">koffeeandkalereporting@gmail.com · koffeeandkalesage@gmail.com</div></div></div>
+    <div class="ti"><div class="tic ofc">🏢</div><div class="tt">Enviar para o escritório (organizado):<ul class="ol"><li>Depósitos da semana passada</li><li>Gorjetas</li><li>Invoices</li><li>Documentos em geral</li><li>Latas</li></ul></div></div>
+    <div class="ti"><div class="tic adm">🗂️</div><div class="tt">Atualizar Spreadsheet Sales x Labor</div></div>
+    <div class="ti"><div class="tic adm">🗂️</div><div class="tt">Atualizar WBR (invoices, depósitos no cofre)</div></div>
+  </div>
+</div>
+
+<!-- TERÇA -->
+<div class="day" id="day-2">
+  <div class="lbl">6 Pedidos</div>
+  <div class="card" style="border-left-color:#E55B1E">
+    <div class="ch"><span class="cs">Koffee and Kale</span><span class="bdg r">até 13h00</span></div>
+    <span class="cl" style="color:#E55B1E">Daily Order</span>
+    <div class="cw">🌐 koffeeandkale.ie</div>
+    <div class="cb">Overnight oats, granola pots, sumos de laranja, smoothies</div>
+  </div>
+  <div class="card" style="border-left-color:#E55B1E">
+    <div class="ch"><span class="cs">Koffee and Kale</span><span class="bdg r">até 13h00</span></div>
+    <span class="cl" style="color:#E55B1E">Daily Order</span>
+    <div class="cw">🌐 koffeeandkale.ie</div>
+    <div class="cb">Oat milk, minibutter</div>
+  </div>
+  <div class="card" style="border-left-color:#185FA5">
+    <div class="ch"><span class="cs">Sysco</span><span class="bdg a">até 15h00</span></div>
+    <span class="cl" style="color:#185FA5">Sysco List</span>
+    <div class="cw">🌐 sysco.ie</div>
+    <div class="cb">Bolos, refrigerantes, leites alternativos, diversos</div>
+  </div>
+  <div class="card" style="border-left-color:#854F0B">
+    <div class="ch"><span class="cs">Henderson</span><span class="bdg a">até 15h00</span></div>
+    <span class="cl" style="color:#854F0B">Henderson</span>
+    <div class="cw">🌐 henderson.ie</div>
+    <div class="cb">Leite, Vithits, crisps, frutas vermelhas, Coke, água</div>
+    <div class="cn">Pedir conforme necessário</div>
+  </div>
+  <div class="lbl">4 Tarefas</div>
+  <div class="tasks">
+    <div class="ti"><div class="tic adm">🗂️</div><div class="tt">Shift report até 10h</div></div>
+    <div class="ti"><div class="tic adm">🗂️</div><div class="tt">Atualizar Spreadsheet Sales x Labor</div></div>
+    <div class="ti"><div class="tic adm">🗂️</div><div class="tt">Atualizar WBR (invoices, depósitos no cofre)</div></div>
+    <div class="ti"><div class="tic rst">📅</div><div class="tt">Fazer roster da semana seguinte</div></div>
+  </div>
+</div>
+
+<!-- QUARTA -->
+<div class="day" id="day-3">
+  <div class="lbl">6 Pedidos</div>
+  <div class="card" style="border-left-color:#E55B1E">
+    <div class="ch"><span class="cs">Koffee and Kale</span><span class="bdg r">até 13h00</span></div>
+    <span class="cl" style="color:#E55B1E">Daily Order</span>
+    <div class="cw">🌐 koffeeandkale.ie</div>
+    <div class="cb">Overnight oats, granola pots, sumos de laranja, smoothies</div>
+  </div>
+  <div class="card" style="border-left-color:#E55B1E">
+    <div class="ch"><span class="cs">Koffee and Kale</span><span class="bdg r">até 13h00</span></div>
+    <span class="cl" style="color:#E55B1E">Daily Order</span>
+    <div class="cw">🌐 koffeeandkale.ie</div>
+    <div class="cb">Oat milk, minibutter</div>
+  </div>
+  <div class="card" style="border-left-color:#A32D2D">
+    <div class="ch"><span class="cs">Koffee and Kale</span><span class="bdg r">até 12h30</span></div>
+    <span class="cl" style="color:#A32D2D">Disposables/Weekly</span>
+    <div class="cw">🌐 koffeeandkale.ie</div>
+    <div class="cb">Descartáveis, xaropes, café, matcha, chai, cacau, açúcar, etc.</div>
+    <div class="cn">⚠️ Prazo mais cedo — antes das 12h30!</div>
+  </div>
+  <div class="card" style="border-left-color:#534AB7">
+    <div class="ch"><span class="cs">Koffee and Kale</span><span class="bdg g">até 16h00</span></div>
+    <span class="cl" style="color:#534AB7">Musgave</span>
+    <div class="cw">🌐 koffeeandkale.ie</div>
+    <div class="cb">Manteiga de amendoim, Nutella, molhos, marshmallow, papel A4, etc.</div>
+  </div>
+  <div class="card" style="border-left-color:#185FA5">
+    <div class="ch"><span class="cs">Sysco</span><span class="bdg a">até 15h00</span></div>
+    <span class="cl" style="color:#185FA5">Sysco List</span>
+    <div class="cw">🌐 sysco.ie</div>
+    <div class="cb">Bolos, refrigerantes, leites alternativos, diversos</div>
+  </div>
+  <div class="card" style="border-left-color:#854F0B">
+    <div class="ch"><span class="cs">Henderson</span><span class="bdg a">até 15h00</span></div>
+    <span class="cl" style="color:#854F0B">Henderson</span>
+    <div class="cw">🌐 henderson.ie</div>
+    <div class="cb">Leite, Vithits, crisps, frutas vermelhas, Coke, água</div>
+    <div class="cn">Pedir conforme necessário</div>
+  </div>
+  <div class="lbl">4 Tarefas</div>
+  <div class="tasks">
+    <div class="ti"><div class="tic adm">🗂️</div><div class="tt">Shift report até 10h</div></div>
+    <div class="ti"><div class="tic adm">🗂️</div><div class="tt">Atualizar Spreadsheet Sales x Labor</div></div>
+    <div class="ti"><div class="tic adm">🗂️</div><div class="tt">Atualizar WBR (invoices, depósitos no cofre)</div></div>
+    <div class="ti"><div class="tic stk">📦</div><div class="tt">Contagem semanal (Weekly Count)<div class="ts">⚠️ Prazo máximo — se não foi feita no domingo, fazer hoje de manhã</div></div></div>
+  </div>
+</div>
+
+<!-- QUINTA -->
+<div class="day" id="day-4">
+  <div class="lbl">4 Pedidos</div>
+  <div class="card" style="border-left-color:#E55B1E">
+    <div class="ch"><span class="cs">Koffee and Kale</span><span class="bdg r">até 13h00</span></div>
+    <span class="cl" style="color:#E55B1E">Daily Order</span>
+    <div class="cw">🌐 koffeeandkale.ie</div>
+    <div class="cb">Overnight oats, granola pots, sumos de laranja, smoothies</div>
+  </div>
+  <div class="card" style="border-left-color:#E55B1E">
+    <div class="ch"><span class="cs">Koffee and Kale</span><span class="bdg r">até 13h00</span></div>
+    <span class="cl" style="color:#E55B1E">Daily Order</span>
+    <div class="cw">🌐 koffeeandkale.ie</div>
+    <div class="cb">Oat milk, minibutter</div>
+  </div>
+  <div class="card" style="border-left-color:#185FA5">
+    <div class="ch"><span class="cs">Sysco</span><span class="bdg a">até 15h00</span></div>
+    <span class="cl" style="color:#185FA5">Sysco List</span>
+    <div class="cw">🌐 sysco.ie</div>
+    <div class="cb">Bolos, refrigerantes, leites alternativos, diversos</div>
+  </div>
+  <div class="card" style="border-left-color:#854F0B">
+    <div class="ch"><span class="cs">Henderson</span><span class="bdg a">até 15h00</span></div>
+    <span class="cl" style="color:#854F0B">Henderson</span>
+    <div class="cw">🌐 henderson.ie</div>
+    <div class="cb">Leite, Vithits, crisps, frutas vermelhas, Coke, água</div>
+    <div class="cn">Pedir conforme necessário</div>
+  </div>
+  <div class="lbl">3 Tarefas</div>
+  <div class="tasks">
+    <div class="ti"><div class="tic adm">🗂️</div><div class="tt">Shift report até 10h</div></div>
+    <div class="ti"><div class="tic adm">🗂️</div><div class="tt">Atualizar Spreadsheet Sales x Labor</div></div>
+    <div class="ti"><div class="tic adm">🗂️</div><div class="tt">Atualizar WBR (invoices, depósitos no cofre)</div></div>
+  </div>
+</div>
+
+<!-- SEXTA -->
+<div class="day" id="day-5">
+  <div class="lbl">4 Pedidos</div>
+  <div class="card" style="border-left-color:#E55B1E">
+    <div class="ch"><span class="cs">Koffee and Kale</span><span class="bdg r">até 13h00</span></div>
+    <span class="cl" style="color:#E55B1E">Daily Order</span>
+    <div class="cw">🌐 koffeeandkale.ie</div>
+    <div class="cb">Overnight oats, granola pots, sumos de laranja, smoothies</div>
+  </div>
+  <div class="card" style="border-left-color:#E55B1E">
+    <div class="ch"><span class="cs">Koffee and Kale</span><span class="bdg r">até 13h00</span></div>
+    <span class="cl" style="color:#E55B1E">Daily Order</span>
+    <div class="cw">🌐 koffeeandkale.ie</div>
+    <div class="cb">Oat milk, minibutter</div>
+  </div>
+  <div class="card" style="border-left-color:#185FA5">
+    <div class="ch"><span class="cs">Sysco</span><span class="bdg a">até 15h00</span></div>
+    <span class="cl" style="color:#185FA5">Sysco List</span>
+    <div class="cw">🌐 sysco.ie</div>
+    <div class="cb">Bolos, refrigerantes, leites alternativos, diversos</div>
+  </div>
+  <div class="card" style="border-left-color:#854F0B">
+    <div class="ch"><span class="cs">Henderson</span><span class="bdg a">até 15h00</span></div>
+    <span class="cl" style="color:#854F0B">Henderson</span>
+    <div class="cw">🌐 henderson.ie</div>
+    <div class="cb">Leite, Vithits, crisps, frutas vermelhas, Coke, água</div>
+    <div class="cn">Pedir conforme necessário</div>
+  </div>
+  <div class="lbl">3 Tarefas</div>
+  <div class="tasks">
+    <div class="ti"><div class="tic adm">🗂️</div><div class="tt">Shift report até 10h</div></div>
+    <div class="ti"><div class="tic adm">🗂️</div><div class="tt">Atualizar Spreadsheet Sales x Labor</div></div>
+    <div class="ti"><div class="tic adm">🗂️</div><div class="tt">Atualizar WBR (invoices, depósitos no cofre)</div></div>
+  </div>
+</div>
+
+<!-- SÁBADO -->
+<div class="day" id="day-6">
+  <div class="lbl">2 Pedidos</div>
+  <div class="card" style="border-left-color:#E55B1E">
+    <div class="ch"><span class="cs">Koffee and Kale</span><span class="bdg r">até 13h00</span></div>
+    <span class="cl" style="color:#E55B1E">Daily Order</span>
+    <div class="cw">🌐 koffeeandkale.ie</div>
+    <div class="cb">Oat milk, minibutter</div>
+  </div>
+  <div class="card" style="border-left-color:#854F0B">
+    <div class="ch"><span class="cs">Henderson</span><span class="bdg a">até 15h00</span></div>
+    <span class="cl" style="color:#854F0B">Henderson</span>
+    <div class="cw">🌐 henderson.ie</div>
+    <div class="cb">Leite, Vithits, crisps, frutas vermelhas, Coke, água</div>
+    <div class="cn">Pedir conforme necessário</div>
+  </div>
+  <div class="lbl">3 Tarefas</div>
+  <div class="tasks">
+    <div class="ti"><div class="tic adm">🗂️</div><div class="tt">Shift report até 10h</div></div>
+    <div class="ti"><div class="tic adm">🗂️</div><div class="tt">Atualizar Spreadsheet Sales x Labor</div></div>
+    <div class="ti"><div class="tic adm">🗂️</div><div class="tt">Atualizar WBR (invoices, depósitos no cofre)</div></div>
+  </div>
+</div>
+
+</div><!-- /body -->
+</div><!-- /app -->
+<script>
+const today = new Date().getDay();
+const NAMES = ['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado'];
+const d = new Date();
+document.getElementById('dlbl').textContent = NAMES[today] + ', ' + d.getDate() + '/' + (d.getMonth()+1) + '/' + d.getFullYear();
+
+const tabs = document.querySelectorAll('.tab');
+const days = document.querySelectorAll('.day');
+
+tabs[today].classList.add('today');
+
+function activate(n) {
+  tabs.forEach(t => t.classList.remove('active'));
+  days.forEach(d => d.classList.remove('active'));
+  tabs[n].classList.add('active');
+  document.getElementById('day-' + n).classList.add('active');
+}
+
+tabs.forEach((t, i) => t.addEventListener('click', () => activate(i)));
+activate(today);
+
+setTimeout(() => {
+  tabs[today].scrollIntoView({inline:'center', block:'nearest'});
+}, 50);
+</script>
+</body>
+</html>
