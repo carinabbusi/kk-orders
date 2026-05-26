@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>K&K Weekly Report</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#F0EDE8;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px}
+.page{width:100%;max-width:480px;display:flex;flex-direction:column;gap:20px}
+
+/* FORM */
+.form-card{background:#fff;border-radius:20px;padding:22px;box-shadow:0 2px 20px rgba(0,0,0,0.08)}
+.form-card h2{font-size:15px;font-weight:600;color:#1A1410;margin-bottom:16px;display:flex;align-items:center;gap:8px}
+.form-card h2 span{font-size:18px}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
+.field label{display:block;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#A09C96;margin-bottom:5px}
+.field input{width:100%;border:1.5px solid #E8E5E0;border-radius:10px;padding:9px 12px;font-size:14px;font-weight:500;color:#1A1410;background:#FAFAF9;transition:border-color .15s}
+.field input:focus{outline:none;border-color:#E55B1E;background:#fff;box-shadow:0 0 0 3px rgba(229,91,30,0.1)}
+.sec-divider{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#A09C96;margin:16px 0 10px;padding-bottom:6px;border-bottom:1px solid #F0EDE8}
+.btn{width:100%;margin-top:16px;background:#E55B1E;color:#fff;border:none;border-radius:12px;padding:12px;font-size:15px;font-weight:700;cursor:pointer;letter-spacing:.02em;transition:background .15s}
+.btn:hover{background:#C94E18}
+.btn:active{transform:scale(0.98)}
+
+/* DASHBOARD CARD */
+.dash{background:#F7F3EE;border-radius:24px;overflow:hidden;box-shadow:0 4px 32px rgba(0,0,0,0.12)}
+.hdr{background:#E55B1E;padding:22px 22px 20px;display:flex;align-items:center;gap:12px}
+.logo{width:44px;height:44px;border-radius:50%;border:2px solid rgba(255,255,255,0.35);object-fit:cover;flex-shrink:0}
+.hdr-text h1{font-size:18px;font-weight:700;color:#fff;letter-spacing:-.3px}
+.hdr-text p{font-size:11px;color:rgba(255,255,255,0.75);margin-top:2px;font-weight:500;letter-spacing:.04em;text-transform:uppercase}
+.week-badge{margin-left:auto;background:rgba(255,255,255,0.2);color:#fff;font-size:11px;font-weight:600;padding:4px 11px;border-radius:99px;white-space:nowrap}
+.body{padding:20px 20px 24px}
+.sec-label{font-size:10px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:#A09C96;margin-bottom:10px}
+.sales-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px}
+.sbox{background:#fff;border-radius:14px;padding:14px 16px;border:1px solid rgba(0,0,0,0.07)}
+.sbox.hi{background:#E55B1E}
+.sbox-lbl{font-size:10px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:#A09C96;margin-bottom:5px}
+.sbox.hi .sbox-lbl{color:rgba(255,255,255,0.7)}
+.sbox-val{font-size:22px;font-weight:700;color:#1A1410;letter-spacing:-.5px}
+.sbox.hi .sbox-val{color:#fff}
+.delta{display:inline-flex;align-items:center;gap:3px;font-size:11px;font-weight:700;background:#EAF3DE;color:#3B6D11;padding:2px 8px;border-radius:99px;margin-top:5px}
+.sbox.hi .delta{background:rgba(255,255,255,0.25);color:#fff}
+.divider{height:1px;background:rgba(0,0,0,0.07);margin:18px 0}
+.labour-item{margin-bottom:16px}
+.labour-item:last-child{margin-bottom:0}
+.lh{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:7px}
+.lh-name{font-size:13px;font-weight:600;color:#1A1410}
+.lh-pct{font-size:18px;font-weight:700}
+.track{height:10px;background:rgba(0,0,0,0.07);border-radius:99px;overflow:visible;position:relative}
+.fill{height:100%;border-radius:99px;transition:width .4s ease}
+.target-line{position:absolute;top:-4px;bottom:-4px;width:2.5px;background:#1A1410;border-radius:1px}
+.lmeta{display:flex;align-items:center;gap:6px;margin-top:6px}
+.lmeta span{font-size:11px;color:#A09C96;font-weight:500}
+.tag{font-size:10px;font-weight:700;padding:2px 8px;border-radius:99px;text-transform:uppercase;letter-spacing:.04em}
+.tag-g{background:#EAF3DE;color:#3B6D11}
+.tag-r{background:#FCEBEB;color:#A32D2D}
+.footer{background:#1A1410;padding:14px 20px;display:flex;align-items:center;justify-content:space-between}
+.footer p{font-size:12px;color:rgba(255,255,255,0.5);margin:0;font-weight:500}
+.tip{text-align:center;font-size:12px;color:#A09C96;margin-top:8px}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- FORM -->
+  <div class="form-card">
+    <h2><span>✏️</span> Enter this week's numbers</h2>
+
+    <div class="row">
+      <div class="field"><label>Week #</label><input type="number" id="f-week" value="20" min="1" max="53"/></div>
+      <div class="field"><label>Year</label><input type="number" id="f-year" value="2026"/></div>
+    </div>
+
+    <div class="sec-divider">Sales</div>
+    <div class="row">
+      <div class="field"><label>Target Sales (€)</label><input type="number" id="f-ts" value="10624.25" step="0.01"/></div>
+      <div class="field"><label>Actual Sales (€)</label><input type="number" id="f-as" value="11841.93" step="0.01"/></div>
+    </div>
+
+    <div class="sec-divider">Labour</div>
+    <div class="row">
+      <div class="field"><label>Target Labour (%)</label><input type="number" id="f-tl" value="38.7" step="0.1" min="0" max="100"/></div>
+      <div class="field"><label>Actual Labour (%)</label><input type="number" id="f-al" value="34.3" step="0.1" min="0" max="100"/></div>
+    </div>
+
+    <button class="btn" onclick="update()">Update Dashboard ↓</button>
+  </div>
+
+  <!-- DASHBOARD -->
+  <div class="dash" id="dashboard">
+    <div class="hdr">
+      <img class="logo" src="data:image/webp;base64,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" alt="Koffee and Kale logo"/>
+      <div class="hdr-text">
+        <h1>Koffee &amp; Kale</h1>
+        <p>Weekly Performance Report</p>
+      </div>
+      <span class="week-badge" id="d-week">W20 · 2026</span>
+    </div>
+
+    <div class="body">
+      <div class="sec-label">Sales</div>
+      <div class="sales-grid">
+        <div class="sbox">
+          <div class="sbox-lbl">Target</div>
+          <div class="sbox-val" id="d-ts">€10,624.25</div>
+          <div class="delta">goal</div>
+        </div>
+        <div class="sbox hi">
+          <div class="sbox-lbl">Actual</div>
+          <div class="sbox-val" id="d-as">€11,841.93</div>
+          <div class="delta" id="d-sdelta">▲ +€1,217.68</div>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="sec-label">Labour <span style="font-weight:400;text-transform:none;letter-spacing:0;font-size:10px;color:#A09C96">— target: below 39%</span></div>
+
+      <div class="labour-item">
+        <div class="lh">
+          <span class="lh-name">Target Labour</span>
+          <span class="lh-pct" style="color:#A09C96" id="d-tl-pct">38.7%</span>
+        </div>
+        <div class="track">
+          <div class="fill" id="d-tl-bar" style="width:38.7%;background:#D0CBC4;"></div>
+          <div class="target-line" id="d-tl-line" style="left:38.7%"></div>
+        </div>
+        <div class="lmeta"><span>Weekly goal</span></div>
+      </div>
+
+      <div class="labour-item">
+        <div class="lh">
+          <span class="lh-name">Actual Labour</span>
+          <span class="lh-pct" id="d-al-pct" style="color:#3B6D11">34.3%</span>
+        </div>
+        <div class="track">
+          <div class="fill" id="d-al-bar" style="width:34.3%;background:linear-gradient(90deg,#5BAD2A,#8CD44A);"></div>
+          <div class="target-line" id="d-al-line" style="left:38.7%"></div>
+        </div>
+        <div class="lmeta">
+          <span class="tag tag-g" id="d-ltag">✓ Below target</span>
+          <span id="d-ldelta">−4.4pp vs target</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer">
+      <p id="d-msg">Amazing week, team! 🧡</p>
+      <span>☕</span>
+    </div>
+  </div>
+
+  <p class="tip">Take a screenshot of the card above and send to your group!</p>
+<p style="text-align:center;padding:8px 0;font-size:11px;color:#A09C96;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;">Feito por <strong style="color:#E55B1E">Carina Busi</strong></p>
+</div>
+
+<script>
+function fmt(n){
+  return '€'+n.toLocaleString('en-IE',{minimumFractionDigits:2,maximumFractionDigits:2});
+}
+function update(){
+  const week=document.getElementById('f-week').value;
+  const year=document.getElementById('f-year').value;
+  const ts=parseFloat(document.getElementById('f-ts').value);
+  const as=parseFloat(document.getElementById('f-as').value);
+  const tl=parseFloat(document.getElementById('f-tl').value);
+  const al=parseFloat(document.getElementById('f-al').value);
+  if(isNaN(ts)||isNaN(as)||isNaN(tl)||isNaN(al))return;
+  const sDelta=as-ts;
+  const lDelta=al-tl;
+  const labourGood=al<=tl;
+  const salesGood=as>=ts;
+  document.getElementById('d-week').textContent='W'+week+' · '+year;
+  document.getElementById('d-ts').textContent=fmt(ts);
+  document.getElementById('d-as').textContent=fmt(as);
+  document.getElementById('d-sdelta').textContent=(sDelta>=0?'▲ +':'▼ ')+fmt(Math.abs(sDelta));
+  document.getElementById('d-tl-pct').textContent=tl.toFixed(1)+'%';
+  document.getElementById('d-al-pct').textContent=al.toFixed(1)+'%';
+  document.getElementById('d-al-pct').style.color=labourGood?'#3B6D11':'#A32D2D';
+  const max=Math.max(tl,al,45);
+  document.getElementById('d-tl-bar').style.width=(tl/max*100).toFixed(1)+'%';
+  document.getElementById('d-al-bar').style.width=(al/max*100).toFixed(1)+'%';
+  document.getElementById('d-al-bar').style.background=labourGood?'linear-gradient(90deg,#5BAD2A,#8CD44A)':'linear-gradient(90deg,#E24B4A,#F09595)';
+  document.getElementById('d-tl-line').style.left=(tl/max*100).toFixed(1)+'%';
+  document.getElementById('d-al-line').style.left=(tl/max*100).toFixed(1)+'%';
+  const pp=Math.abs(lDelta).toFixed(1);
+  document.getElementById('d-ltag').textContent=labourGood?'✓ Below target':'✗ Above target';
+  document.getElementById('d-ltag').className='tag '+(labourGood?'tag-g':'tag-r');
+  document.getElementById('d-ldelta').textContent=(lDelta<0?'−':'+')+pp+'pp vs target';
+  const msgs=salesGood&&labourGood?['Amazing week, team! 🧡','Smashed it this week! 🧡','Brilliant work everyone! 🧡']:salesGood?['Sales on point — keep it up! 🧡']:labourGood?['Labour well managed! 🧡']:['Keep pushing, team! 🧡'];
+  document.getElementById('d-msg').textContent=msgs[Math.floor(Math.random()*msgs.length)];
+}
+</script>
+</body>
+</html>
